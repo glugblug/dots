@@ -3,33 +3,69 @@
 set $mod Mod4
 set $ws1 1 aluv
 set $ws2 2 tern
-set $ws3 3 fasz
-set $ws4 4 thrn
-set $ws5 5 gedc
+set $ws3 3 muse
+set $ws4 4 sets
+set $ws5 5 dili
 set $ws6 6 hhhh
-set $menu wmenu-run
-set $term alacritty 
-set $wallpaper ~/Pictures/1735024227209799.png
+set $menu bemenu-run -l 6 -c -B 5 -W 0.2 -R 2 -C -p "#" --cw 1 --fixed-height --fb "#349434AA" --nb "#C6C8d1" --nf "#13aa12"
+# --tb <color> Title background.
+# --tf <color> Title foreground.
+# --fb <color> Filter background.
+# --ff <color> Filter foreground
+# --cb <color> Cursor background.
+# --cf <color> Cursor foreground
+# --nb <color> Normal background.
+# --nf <color> Normal foreground.
+# --hb <color> Highlighted background.
+# --hf <color> Highlighted foreground.
+# --fbb <color> Feedback background.
+# --fbf <color> Feedback foreground.
+# --sb <color> Selected background.
+# --sf <color> Selected foreground.
+# --ab <color> Alternating background color.
+# --af <color> Alternating foreground color.
+# --scb <color> Scrollbar background.
+# --scf <color> Scrollbar foreground.
+set $term foot 
+set $brws qutebrowse 
+set $wallpaper ~/Pictures/wp8863758.jpg
 set $lockscreenbg ~/Pictures/wp8863758.jpg
-set $lock 'swaylock --screenshots --clock --effect-blur 7x5 --effect-greyscale \
-  --ring-color 89b8c2 \
-  --key-hl-color c6c8d1 \
+set $lock  'swaylock \
+	--screenshots \
+  --effect-greyscale \
+	--clock \
+	--indicator \
+	--indicator-radius 100 \
+	--indicator-thickness 7 \
+	--effect-blur 7x5 \
+	--effect-vignette 0.5:0.5 \
+	--ring-color bb00cc \
+	--key-hl-color 880033 \
 	--line-color 00000000 \
 	--inside-color 00000088 \
 	--separator-color 00000000 \
-  --grace 2'
+	--grace 2 \
+	--fade-in 0.2' 
+
+set $text c6c8d1
+set $bg 323232
+set $bgl 5c5c5c
+set $bgbl 0f1117
+
 smart_gaps on
-gaps inner 5 
-gaps outer 2 
+gaps inner 5
+gaps outer 2
 default_border none
 set $cl_high #009ddc
 set $cl_indi #d9d8d8
 set $cl_back #231f20
 set $cl_fore #d9d8d8
 set $cl_urge #ee2e24
+floating_modifier $mod normal
+workspace $ws6 output "HDMI-A-2"
 
-
-# exec kitty -e spotify_player 
+for_window [class="REAPER"] floating enable, sticky enable
+# for_window [title="^VST$"] floating enable
 exec kitty -e btop 
 # for_window [title="spotify_player"] move scratchpad, resize set 400 400, move absolute position center
 for_window [title="btop"] move scratchpad, resize set 600 600 move absolute position center
@@ -38,11 +74,17 @@ for_window [title="btop"] move scratchpad, resize set 600 600 move absolute posi
 # BAR #
 bar {
     position bottom
-    status_command bumblebee-status -m title playerctl spotify disk network_traffic  cpu memory brightness amixer battery date time \
--p playerctl.layout="playerctl.song,playerctl.prev,playerctl.pause,playerctl.next" playerctl.scrolling.width="10" playerctl.scrolling.speed="2" \
--t iceberg
+    status_command bumblebee-status -m title  spotify  network_traffic vpn disk cpu memory brightness amixer battery date time \
+    -p memory.format='{used} ({percent:05.02f}%)' \
+    time.format="%H:%M" \
+    date.format="%b %d" \
+    disk.format="{used} ({percent:05.02f}%)" \
+    -t iceberg
+    # -p disk.format='({used} ({percent:05.02f}%)' \
+# -p playerctl.layout="playerctl.song,playerctl.prev,playerctl.pause,playerctl.next" playerctl.scrolling.width="10" playerctl.scrolling.speed="2" \
     workspace_min_width 40
-    tray_padding 4
+    tray_padding 5
+    output "eDP-1"
     colors {
         statusline #c6c8d1
          background #32323244
@@ -53,17 +95,24 @@ bar {
 # autostarts #
 exec pipewire & wireplumber & pipewire-pulse
 exec autotiling
+# exec workstyle
+# exec aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all=true 
+exec mako
 exec xbacklight -set 40 
-output * bg $wallpaper     fill
+output * bg $wallpaper    center 
 exec swayidle -w \
-          timeout 300 $lock \
-          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+          timeout 600 $lock \
+          timeout 1000 'swaymsg "output * power off"' \
+          resume 'swaymsg "output * power on"' \
           before-sleep $lock
 input "type:touchpad" {
       dwt enabled
       tap enabled
-      natural_scroll disabled
+      natural_scroll enabled
       middle_emulation enabled
+      pointer_accel 0.3
+      tap_button_map lmr
+      click_method clickfinger
 }
 # Colors                border   bg       text     indi     childborder
 client.focused          $cl_high $cl_high $cl_fore $cl_indi $cl_high
@@ -80,7 +129,7 @@ client.urgent           $cl_urge $cl_urge $cl_fore $cl_urge $cl_urge
     bindsym $mod+a exec $term
     bindsym $mod+e exec 'swaymsg exit'
     bindsym $mod+d exec $menu
-    bindsym $mod+w exec firefox
+    bindsym $mod+w exec $brws
     bindsym $mod+Shift+c reload
     bindsym $mod+f fullscreen
     bindsym $mod+Shift+space floating toggle
